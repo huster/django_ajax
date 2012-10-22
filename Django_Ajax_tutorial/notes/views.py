@@ -1,10 +1,14 @@
 # Create your views here.
 from models import Note
+from django.views.decorators.csrf import csrf_protect
 from django.http import HttpResponseRedirect, HttpResponseServerError
 
+@csrf_protect
 def create_note(request):
     error_msg = u"No POST data sent."
     if request.method == "POST":
+        c = {}
+        c.update(csrf(request))
         post = request.POST.copy()
         if post.has_key('slug') and post.has_key('title'):
             slug = post['slug']
@@ -13,7 +17,7 @@ def create_note(request):
             else:
                 title = post['title']
                 new_note = Note.objects.create(title=title,slug=slug)
-                return HttpResponseRedirect(new_note.get_absolute_url())
+                return HttpResponseRedirect(new_note.get_absolute_url(), c)
         else:
             error_msg = u"Insufficient POST data (need 'slug' and 'title'!)"
     return HttpResponseServerError(error_msg)
