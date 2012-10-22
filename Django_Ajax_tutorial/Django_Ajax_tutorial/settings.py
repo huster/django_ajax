@@ -1,6 +1,7 @@
 # Django settings for Django_Ajax_tutorial project.
 import os
-ROOT_PATH = os.path.dirname(__file__)
+firstpath = os.path.dirname(os.path.abspath(__file__))
+ROOT_PATH = firstpath.rpartition('\\')[0] if firstpath.rpartition('\\')[0] else firstpath.rpartition('\\')[2]
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -14,7 +15,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(ROOT_PATH, 'notes.sqlite'),                      # Or path to database file if using sqlite3.
+        'NAME': os.path.join(firstpath, 'notes.sqlite'),                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
