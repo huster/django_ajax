@@ -1,6 +1,7 @@
 # Create your views here.
 from models import Note
 from django.views.decorators.csrf import csrf_protect
+from django.core.context_processors import csrf
 from django.http import HttpResponseRedirect, HttpResponseServerError
 
 @csrf_protect
