@@ -25,7 +25,7 @@ $(document).ready(function() {
   var initialSlugChange = true;
 
   var perform_update = function(field, val) {
-    var data = {};
+    var data = {csrfmiddlewaretoken: '{{ csrf_token }}'};
     data[field] = val;
     var args = { type:"POST", url:"update/", data:data, complete:done };
     $.ajax(args);

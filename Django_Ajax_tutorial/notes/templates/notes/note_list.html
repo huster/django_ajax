@@ -21,10 +21,6 @@
 </div>
 
 <script>
-var csrfsafemethod = function(method) {
-	return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
-
 var done = function(res, status) {
   if (status == "success") {
     var txt = res.responseText;
@@ -43,22 +39,12 @@ var done = function(res, status) {
   }
 }
 
-var csrftoken = $.cookie('csrftoken');
-
 var create_note = function() {
   var title = $("#title").val()
   var slug = $("#slug").val()
   if (title != "" && slug != "") {
-    var data = { title:title, slug:slug };
+    var data = { title:title, slug:slug, csrfmiddlewaretoken: '{{ csrf_token }}'};
     var args = { type:"POST", url:"/create/", data:data, complete:done };
-    $.ajaxSetup({
-    	crossDomain: false,
-    	beforeSend: function(xhr, settings) {
-    		if (!crsfsafemethod(settings.type)) {
-    			xhr.setRequestHeader("X-CSRFToken", csrftoken);
-    		}
-    	}
-    })
     $.ajax(args);
   }
   else {
