@@ -2,6 +2,7 @@
 
 {% block content %}
 
+{% if user.is_authenticated %}
 <div class="new">
   <h2> Create a new note. </h2>
   <form method="post" action="/create/"> 
@@ -10,6 +11,7 @@
   <input id="create" type="submit" value="create note">
   </form>
 </div>
+{% endif %}
 
 <div class="list">
   <h2> Notes </h2>
@@ -20,6 +22,7 @@
   </ol>
 </div>
 
+{% if user.is_authenticated %}	
 <script>
 var done = function(res, status) {
 	var txt = res.responseText;
@@ -49,7 +52,21 @@ var create_note = function() {
   }
   return false;
 };
-
+$("#slug").keyup(function() {
+	var slug = this.value;
+	print slug;
+//	var complete = function(res, status) {
+//		if (status == "success") $("#slug").css('background-color', '#A0A0FF');
+//		else $("#slug").css('background-color', '#FFA0A0');
+//	}
+//	$.ajax({type: 'GET', url: '/slug_available', 
+//		data: {'slug': slug, csrfmiddlewaretoken: '{{ csrf_token }}'}, complete: complete});
+	$.get('/slug_available/', {'slug': slug, csrfmiddlewaretoken: '{{ csrf_token }}'}, complete: function(res, status) {
+		if (status == "success") $("#slug").css('background-color', '#A0A0FF');
+		else $("#slug").css('background-color', '#FFA0A0');
+	});
+});
 $("#create").click(create_note);
 </script>
+{% endif %}
 {% endblock %}

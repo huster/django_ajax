@@ -3,7 +3,9 @@ from models import Note
 from django.utils import simplejson
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect, HttpResponseServerError
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def create_note(request, callback_args = []):
     error_msg = u"No POST data sent."
     if request.method == "POST":
@@ -20,6 +22,7 @@ def create_note(request, callback_args = []):
             error_msg = u"Insufficient POST data (need 'slug' and 'title'!)"
     return HttpResponseServerError(error_msg)
 
+@login_required
 def update_note(request, slug):
     if request.method == "POST":
         post = request.POST.copy()
@@ -40,6 +43,7 @@ def update_note(request, slug):
     error_msg = u"No POST data sent."
     return HttpResponseServerError(error_msg)
 
+@login_required
 def ajax_create_note(request):
     success = False
     to_return = {'msg': u'No POST data sent.'}
@@ -64,6 +68,7 @@ def ajax_create_note(request):
     else:
         return HttpResponseServerError(serialized, mimetype = 'application/json')
     
+@login_required
 def ajax_update_note(request, slug):
     success = False
     to_return = {'msg': u'No POST date received.'}
@@ -93,3 +98,15 @@ def ajax_update_note(request, slug):
         return HttpResponse(serialized, mimetype='application/json')
     else:
         return HttpResponseServerError(serialized, mimetype = 'application/json')
+    
+    @login_required
+    def slug_available(request):
+        if request.method == "GET":
+            get = request.GET.copy()
+            if get.has_key('slug'):
+                slug_str = get['slug']
+                if Note.objects.filter(slug=slug_str).count() == 0:
+                    return HttpResponse(slug_str)
+                else:
+                    return HttpResponseServerError(slug_str)
+        return HttpResponseServerError("Requires a slug field.")
