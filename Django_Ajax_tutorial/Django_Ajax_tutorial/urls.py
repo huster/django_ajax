@@ -8,7 +8,7 @@ from django.conf import settings
 urlpatterns = patterns('',
     (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT }),
     (r'^accounts/login/$', 'django.contrib.auth.views.login'),
-    (r'^accounts/logout/$', 'django.contrib.auto.views.logout'),
+    (r'^accounts/logout/$', 'django.contrib.auth.views.logout'),
     (r'^', include('notes.urls')),
     # Examples:
     # url(r'^$', 'Django_Ajax_tutorial.views.home', name='home'),

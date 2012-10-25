@@ -3,7 +3,11 @@ from models import Note
 from django.utils import simplejson
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect, HttpResponseServerError
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 @login_required
 def create_note(request, callback_args = []):
@@ -99,14 +103,24 @@ def ajax_update_note(request, slug):
     else:
         return HttpResponseServerError(serialized, mimetype = 'application/json')
     
-    @login_required
-    def slug_available(request):
-        if request.method == "GET":
-            get = request.GET.copy()
-            if get.has_key('slug'):
-                slug_str = get['slug']
-                if Note.objects.filter(slug=slug_str).count() == 0:
-                    return HttpResponse(slug_str)
-                else:
-                    return HttpResponseServerError(slug_str)
-        return HttpResponseServerError("Requires a slug field.")
+@login_required
+def slug_available(request):
+    if request.method == "GET":
+        get = request.GET.copy()
+        if get.has_key('slug'):
+            slug_str = get['slug']
+            if Note.objects.filter(slug=slug_str).count() == 0:
+                return HttpResponse(slug_str)
+            else:
+                return HttpResponseServerError(slug_str)
+    return HttpResponseServerError("Requires a slug field.")
+
+def register(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            new_user = form.save()
+            return render_to_response("registration/welcome.html")
+    else:
+        form = UserCreationForm()
+    return render_to_response("registration/register.html", {'form': form}, context_instance=RequestContext(request))
