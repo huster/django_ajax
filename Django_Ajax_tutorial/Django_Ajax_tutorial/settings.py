@@ -93,8 +93,8 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = ( # the classes loaded from bottom to up, so if some view need csrf protection, it must goes up to csrfviewmiddleware
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',#authentication middleware must come after session middleware
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -108,7 +108,7 @@ LOGIN_REDIRECT_URL = u"/"
 WSGI_APPLICATION = 'Django_Ajax_tutorial.wsgi.application'
 
 TEMPLATE_DIRS = (
-                 os.path.join(firstpath, 'templates')
+                 os.path.join(firstpath, 'templates'),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
